@@ -135,6 +135,5 @@ export default bomEnv().then(() => {
     },
     // indexSortableFields: true
   });
-
 });
 
