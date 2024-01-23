@@ -1,0 +1,66 @@
+version: '3.7'
+name: ${PROJECT_NAME}
+services:
+  proxy:
+    image: wsdev.azurecr.io/ws-bom-proxy:main
+    container_name: "proxy"
+    environment:
+      - WEBSITES_PORT=2222
+    expose:
+      - 80
+      - 2222
+    ports:
+      - "80:80"
+      - "2222:2222"
+    #volumes:
+    #  - ${WEBAPP_STORAGE_HOME}/data/proxy/etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    #mongo:
+    #  image: wsdev.azurecr.io/ws-bom-mongo:${DOCKER_IMAGE_TAG}
+    #  container_name: "mongo"
+    #  ports:
+    #    - "27017"
+    #  expose:
+    #    - 27017
+    #    - 22
+  bowl:
+    image: ${DOCKER_REGISTRY}${PROJECT_NAME}-bowl:${DOCKER_IMAGE_TAG}
+    container_name: "bowl"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      - PAYLOAD_PUBLIC_BASE_PATH=/bowl
+      - PAYLOAD_PUBLIC_PREVIEW_URL=${PROJECT_URL}
+      - PAYLOAD_PUBLIC_SERVER_URL=''
+      - PAYLOAD_PUBLIC_CSRF_URLS=${PAYLOAD_PUBLIC_CSRF_URLS}
+      - FS_STORAGE_BASEDIR=/app/media
+      - FS_STORAGE_BASEURL=${PROJECT_URL}/oven/media
+      - FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL=false
+    ports:
+      - "4000"
+  oven:
+    image: ${DOCKER_REGISTRY}${PROJECT_NAME}-oven:${DOCKER_IMAGE_TAG}
+    container_name: "oven"
+    environment:
+      - ASPNETCORE_URLS=http://*:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+    expose:
+      - 5000
+    ports:
+      - "5000"
+    entrypoint: [ "dotnet", "Websolute.BOM.Oven.Web.dll" ]
+    depends_on:
+      - bowl
+  mixer:
+    image: ${DOCKER_REGISTRY}${PROJECT_NAME}-mixer:${DOCKER_IMAGE_TAG}
+    container_name: "mixer"
+    environment:
+      - NEXT_PUBLIC_MOCK_FALLBACK_URL=http://localhost:3000
+      - NEXT_PUBLIC_URL=${PROJECT_URL}
+      - NEXT_PUBLIC_API=/api
+      - STORE_URL=${STORE_URL}
+      - STORE_API=${STORE_API}
+      - STORE_STRATEGY=${STORE_STRATEGY}
+    ports:
+      - "3000"
+    depends_on:
+      - oven

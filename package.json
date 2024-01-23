@@ -1,0 +1,81 @@
+{
+  "name": "ia_ambassador",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "src/bowl/**",
+    "src/packages/**"
+  ],
+  "scripts": {
+    "reinstall:clean": "rimraf \"**/node_modules/**\" \"**/dist/**\" \"**/\\.next/**\" \"**/\\.turbo/**\" \"package-lock.json\"",
+    "reinstall:install": "npm install",
+    "reinstall": "run-s reinstall:*",
+    "dev": "turbo run dev --parallel --filter=!@ia_ambassador/storybook --no-daemon",
+    "dev:bowl": "turbo run dev --parallel --filter=@ia_ambassador/bowl --filter=./src/bowl/packages/* --filter=./src/packages/* --no-daemon",
+    "dev:web": "turbo run dev --parallel --filter=@ia_ambassador/web --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "dev:theme": "turbo run dev --parallel --filter=@ia_ambassador/theme --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "dev:stories": "turbo run dev --parallel --filter=@ia_ambassador/storybook --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "prune:bowl": "turbo prune --scope=@ia_ambassador/bowl --docker",
+    "prune:web": "turbo prune --scope=@ia_ambassador/web --docker",
+    "build": "turbo run build --force --filter=!@ia_ambassador/storybook --filter=!@ia_ambassador/theme --no-daemon",
+    "build:bowl": "turbo run build --force --filter=@ia_ambassador/bowl --filter=./src/bowl/packages/* --filter=./src/packages/* --no-daemon",
+    "build:web": "turbo run build --force --filter=@ia_ambassador/web --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "build:theme": "turbo run build --force --filter=@ia_ambassador/theme --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "build:stories": "turbo run build --force --filter=@ia_ambassador/storybook --filter=./src/mixer/packages/* --filter=./src/packages/* --no-daemon",
+    "build:packages": "turbo run build --force --filter=./src/mixer/packages/core --no-daemon",
+    "analyze": "cross-env ANALYZE=true npm run build:web",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "start": "turbo run start --scope=@ia_ambassador/web",
+    "serve": "turbo run start --scope=@ia_ambassador/web",
+    "serve:bowl": "turbo run start --scope=@ia_ambassador/bowl",
+    "serve:web": "turbo run start --scope=@ia_ambassador/web",
+    "serve:theme": "turbo run start --scope=@ia_ambassador/theme",
+    "serve:stories": "turbo run start --scope=@ia_ambassador/storybook",
+    "storybook": "turbo run dev --parallel --filter=@ia_ambassador/storybook",
+    "test:bowl": "turbo run test --parallel --filter=@ia_ambassador/bowl --filter=./src/bowl/packages/* --no-daemon",
+    "test:web": "turbo run test --parallel --filter=@ia_ambassador/web --filter=./src/mixer/packages/* --no-daemon",
+    "test": "turbo run test --no-daemon",
+    "test-watch": "turbo run test-watch --no-daemon",
+    "test-e2e": "turbo run test-e2e --concurrency=1 --no-daemon",
+    "coverage": "turbo run coverage --no-daemon",
+    "bowl": "npm run dev:bowl",
+    "bowl:build": "npm run build:bowl",
+    "bowl:serve": "npm run serve:bowl",
+    "oven": "dotnet watch run -lp web",
+    "mixer": "npm run dev:web",
+    "mixer:build": "npm run build:web",
+    "mixer:serve": "npm run serve:web"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.4.8",
+    "@changesets/cli": "^2.26.0",
+    "@swc/jest": "^0.2.24",
+    "@websolutespa/bom-cli": "latest",
+    "@websolutespa/bom-env": "latest",
+    "ajv": "^8.8.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.46.0",
+    "eslint-config-websolute": "*",
+    "prettier": "^3.0.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "3.0.2",
+    "ts-node": "^10.9.1",
+    "turbo": "latest"
+  },
+  "bundledDependencies": [
+    "packages/test"
+  ],
+  "engines": {
+    "npm": ">=8.5.5 <=9.x.x",
+    "node": ">=16.15.0 <=18.x.x"
+  },
+  "packageManager": "npm@8.5.5",
+  "overrides": {
+    "graphql@>15.7.0 <16.7.0": "^15.8.0"
+  }
+}

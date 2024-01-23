@@ -1,0 +1,76 @@
+name: ws-bom Build and publish Docker images
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    name: Build & push docker image
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY: wsdev.azurecr.io
+      DOCKER_IMAGE_TAG: ${{ github.head_ref || github.ref_name || 'latest' }}
+      AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+      AZURE_CONTAINER_REGISTRY_USER: ${{ secrets.AZURE_CONTAINER_REGISTRY_USER }}
+      AZURE_CONTAINER_REGISTRY_PWD: ${{ secrets.AZURE_CONTAINER_REGISTRY_PWD }}
+      AZURE_APP_SLOT: stage
+    steps:
+      - name: Get repository name
+        run: |
+          echo "PROJECT=$(basename ${{ github.repository }})" >> $GITHUB_ENV
+      - name: Checkout
+        id: checkout-repo
+        uses: actions/checkout@v3
+      - name: Fix docker image tag name
+        run: echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG/\#/}" >> $GITHUB_ENV
+      - name: Login to Azure Container Registry
+        id: logn-ACR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.AZURE_CONTAINER_REGISTRY_USER }}
+          password: ${{ env.AZURE_CONTAINER_REGISTRY_PWD }}
+      - name: 'Create .env.production file'
+        run: |
+          echo "${{ vars.BOWL_ENV_PRODUCTION }}" > ./src/bowl/payload/.env.production
+          echo "${{ vars.MIXER_ENV_PRODUCTION }}" > ./src/mixer/web/.env.production
+      - name: Build bowl
+        id: build-push-bowl
+        if: (true)
+        run: |
+          docker build --progress=plain -f ./src/bowl/Dockerfile -t ${{ env.PROJECT }}-bowl:${{ env.DOCKER_IMAGE_TAG }}  .
+          docker tag ${{ env.PROJECT }}-bowl:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.REGISTRY }}/${{ env.PROJECT }}-bowl:${{ env.DOCKER_IMAGE_TAG }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT }}-bowl:${{ env.DOCKER_IMAGE_TAG }}
+      - name: Build oven
+        id: build-push-oven
+        if: (true)
+        run: |
+          docker build --progress=plain -f ./src/oven/Dockerfile -t ${{ env.PROJECT }}-oven:${{ env.DOCKER_IMAGE_TAG }}  ./src/oven
+          docker tag ${{ env.PROJECT }}-oven:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.REGISTRY }}/${{ env.PROJECT }}-oven:${{ env.DOCKER_IMAGE_TAG }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT }}-oven:${{ env.DOCKER_IMAGE_TAG }}
+      - name: Build mixer
+        id: build-push-mixer
+        if: (true)
+        run: |
+          docker build --progress=plain -f ./src/mixer/Dockerfile -t ${{ env.PROJECT }}-mixer:${{ env.DOCKER_IMAGE_TAG }}  .
+          docker tag ${{ env.PROJECT }}-mixer:${{ env.DOCKER_IMAGE_TAG }}  ${{ env.REGISTRY }}/${{ env.PROJECT }}-mixer:${{ env.DOCKER_IMAGE_TAG }}
+          docker push ${{ env.REGISTRY }}/${{ env.PROJECT }}-mixer:${{ env.DOCKER_IMAGE_TAG }}
+      - name: 'Az CLI login using OIDC'
+        id: login-CLI
+        continue-on-error: true
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy staging slot
+        id: deploy-stage
+        if: (true)
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.50.0
+          inlineScript: |
+            az webapp restart --name ${{ env.PROJECT }} --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --slot ${{ env.AZURE_APP_SLOT }}
