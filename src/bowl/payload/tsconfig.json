@@ -1,5 +1,4 @@
 {
-  "extends": "@websolutespa/tsconfig/tsreact.json",
   "include": [
     "src"
   ],
@@ -10,6 +9,36 @@
     "coverage"
   ],
   "compilerOptions": {
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "remove",
+    "incremental": false,
+    "inlineSources": false,
+    "isolatedModules": true,
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "target": "es6",
     "outDir": "./dist",
     "rootDir": "./src",
     "module": "commonjs",
@@ -22,6 +51,6 @@
   },
   "ts-node": {
     "transpileOnly": true,
-    "swc": true,
+    "swc": true
   }
 }

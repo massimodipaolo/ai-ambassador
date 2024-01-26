@@ -1,9 +1,12 @@
 
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
+// import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
 import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
+import llm, { knowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
 import { clearLogs, cronJob } from '@websolutespa/payload-plugin-cron-job';
@@ -84,10 +87,21 @@ export default bomEnv().then(() => {
       bowl({
         defaultMarket,
         group: group,
+        plugins: [
+          llm(),
+        ],
       }),
       cloudStorage({
         collections: {
           [slug.media]: {
+            /*
+            adapter: azureBlobStorageAdapter({
+              allowContainerCreate: true,
+              baseURL: process.env.FS_STORAGE_BASEURL,
+              connectionString: 'https://ai-ambassador-cms.azurewebsites.net/',
+              containerName: 'Ai-Ambassador',
+            }),
+            */
             adapter: fsStorageAdapter({
               baseDir: process.env.FS_STORAGE_BASEDIR,
               baseURL: process.env.FS_STORAGE_BASEURL,
@@ -118,6 +132,13 @@ export default bomEnv().then(() => {
             },
             cron: '0 1 * * 0',
           },
+          llm: {
+            execute: async (payload: Payload) => {
+              console.log('ScheduledTask.llm every day at 01:00');
+              return await knowledgeBaseHandler(payload);
+            },
+            cron: '0 1 * * *',
+          },
         },
       }),
     ],
@@ -127,13 +148,13 @@ export default bomEnv().then(() => {
     graphQL: {
       schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
     },
+    // indexSortableFields: true
     routes: {
       api: `${basePath}/api`,
       admin: `${basePath}/admin`,
       graphQL: `${basePath}/graphql`,
       graphQLPlayground: `${basePath}/graphql-playground`,
     },
-    // indexSortableFields: true
   });
-});
 
+});

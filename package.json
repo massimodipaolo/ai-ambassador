@@ -57,6 +57,7 @@
     "@swc/jest": "^0.2.24",
     "@websolutespa/bom-cli": "latest",
     "@websolutespa/bom-env": "latest",
+    "@websolutespa/tsconfig": "latest",
     "ajv": "^8.8.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.46.0",
