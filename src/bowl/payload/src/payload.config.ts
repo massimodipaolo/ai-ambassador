@@ -64,6 +64,11 @@ export default bomEnv().then(() => {
         },
       },
       css: path.resolve(__dirname, './styles.scss'),
+      webpack: (config) => {
+        if (config.resolve?.fallback)
+          config.resolve.fallback = { ...config.resolve.fallback, fs: false };
+        return config;
+      },
     },
     localization: {
       locales: [...locales],
