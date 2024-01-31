@@ -1,6 +1,6 @@
 
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
-// import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
+import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
 import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import bomEnv from '@websolutespa/bom-env';
@@ -8,7 +8,7 @@ import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payl
 import llm, { knowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
-import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
+//import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
 import { clearLogs, cronJob } from '@websolutespa/payload-plugin-cron-job';
 import { localization } from '@websolutespa/payload-plugin-localization';
 import '@websolutespa/payload-plugin-localization/dist/index.css';
@@ -94,18 +94,18 @@ export default bomEnv().then(() => {
       cloudStorage({
         collections: {
           [slug.media]: {
-            /*
             adapter: azureBlobStorageAdapter({
-              allowContainerCreate: true,
-              baseURL: process.env.FS_STORAGE_BASEURL,
-              connectionString: 'https://ai-ambassador-cms.azurewebsites.net/',
-              containerName: 'Ai-Ambassador',
+              connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+              containerName: process.env.AZURE_STORAGE_CONTAINER_NAME,
+              allowContainerCreate: process.env.AZURE_STORAGE_ALLOW_CONTAINER_CREATE === 'true',
+              baseURL: process.env.AZURE_STORAGE_ACCOUNT_BASEURL,
             }),
-            */
+            /*
             adapter: fsStorageAdapter({
               baseDir: process.env.FS_STORAGE_BASEDIR,
               baseURL: process.env.FS_STORAGE_BASEURL,
             }),
+            */
             disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true',
           },
         } as Record<string, CollectionOptions>,
