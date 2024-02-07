@@ -6,11 +6,9 @@ WORKDIR /app
 COPY *.json ./
 COPY src/bowl ./src/bowl
 RUN npm ci --legacy-peer-deps=true
+ENV PYTHON=python3.11
 # build
 RUN npm run build:bowl
-#llm
-ENV PYTHON=python3.11
-RUN cd ./src/bowl/payload && npm run dev:llm
 
 FROM base as runtime
 WORKDIR /app

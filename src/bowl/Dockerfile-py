@@ -29,8 +29,6 @@ COPY src/bowl ./src/bowl
 RUN npm ci --legacy-peer-deps=true
 # build
 RUN npm run build:bowl
-#llm
-RUN cd ./src/bowl/payload && npm run dev:llm
 
 FROM base as runtime
 WORKDIR /app
