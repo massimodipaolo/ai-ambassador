@@ -5,7 +5,7 @@ import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
-import llm, { knowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import llm, { fineTuningJobsHandler, knowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 //import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
@@ -66,7 +66,7 @@ export default bomEnv().then(() => {
       css: path.resolve(__dirname, './styles.scss'),
       webpack: (config) => {
         if (config.resolve?.fallback)
-          config.resolve.fallback = { ...config.resolve.fallback, fs: false };
+          config.resolve.fallback = { ...config.resolve.fallback, fs: false, stream: false };
         return config;
       },
     },
@@ -143,6 +143,13 @@ export default bomEnv().then(() => {
               return await knowledgeBaseHandler(payload);
             },
             cron: '0 1 * * *',
+          },
+          llmFineTuning: {
+            execute: async (payload: Payload) => {
+              console.log('ScheduledTask.llmFineTuning every day at 02:00');
+              return await fineTuningJobsHandler(payload);
+            },
+            cron: '0 2 * * *',
           },
         },
       }),
