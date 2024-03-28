@@ -5,7 +5,7 @@ import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
-import llm, { fineTuningJobsHandler, knowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import llm, { fineTuningJobsHandler, knowledgeBaseHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 //import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
@@ -144,13 +144,30 @@ export default bomEnv().then(() => {
             },
             cron: '0 1 * * *',
           },
-          llmFineTuning: {
+          llmKnowledgeBase: {
             execute: async (payload: Payload) => {
-              console.log('ScheduledTask.llmFineTuning every day at 02:00');
-              return await fineTuningJobsHandler(payload);
+              console.log('ScheduledTask.toolsKnowledgeBaseHandler every day at 02:00');
+              return await toolsKnowledgeBaseHandler(payload);
             },
             cron: '0 2 * * *',
           },
+          llmFineTuning: {
+            execute: async (payload: Payload) => {
+              console.log('ScheduledTask.llmFineTuning every day at 03:00');
+              return await fineTuningJobsHandler(payload);
+            },
+            cron: '0 3 * * *',
+          },
+          /*
+          todo: enable this rule when the python script that generates the rules vectordb is implemented
+          llmRules: {
+            execute: async (payload: Payload) => {
+              console.log('ScheduledTask.llmRules every day at 04:00');
+              return await rulesHandler(payload);
+            },
+            cron: '0 4 * * *',
+          },
+          */
         },
       }),
     ],
