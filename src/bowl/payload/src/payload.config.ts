@@ -1,12 +1,12 @@
 
-import llm, { fineTuningJobsHandler, knowledgeBaseHandler, toolsKnowledgeBaseHandler } from '@ia_ambassador/payload-plugin-bowl-llm';
-import '@ia_ambassador/payload-plugin-bowl-llm/dist/index.css';
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
 import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
+import llm, { fineTuningJobsHandler, knowledgeBaseHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 //import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
 import { clearLogs, cronJob } from '@websolutespa/payload-plugin-cron-job';
