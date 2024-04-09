@@ -25,15 +25,21 @@
     "test-e2e:test": "playwright test",
     "test-e2e": "run-s test-e2e:*",
     "coverage:integration": "npm run test:integration -- --coverage",
-    "coverage": "run-s -c --silent coverage:*"
+    "coverage": "run-s -c --silent coverage:*",
+    "migrate:create": "cross-env MONGODB_URI=\"{MONGODB_URI}\" PAYLOAD_CONFIG_PATH=src/payload.config.ts payload migrate:create --file @payloadcms/db-mongodb/versions-v1-v2",
+    "migrate:run": "cross-env MONGODB_URI=\"{MONGODB_URI}\" PAYLOAD_CONFIG_PATH=src/payload.config.ts payload migrate"
   },
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
-    "@payloadcms/plugin-cloud-storage": "^1.0.12",
-    "@payloadcms/plugin-seo": "^1.0.8",
+    "@payloadcms/bundler-webpack": "^1.0.5",
+    "@payloadcms/db-mongodb": "^1.2.0",
+    "@payloadcms/plugin-cloud-storage": "^1.1.1",
+    "@payloadcms/plugin-cloud": "^2.2.6",
+    "@payloadcms/plugin-seo": "^1.0.15",
+    "@payloadcms/richtext-slate": "^1.3.1",
     "@websolutespa/bom-core": "latest",
     "@websolutespa/bom-env": "latest",
-    "@websolutespa/payload-plugin-bowl-llm": "0.1.3",
+    "@websolutespa/payload-plugin-bowl-llm": "latest",
     "@websolutespa/payload-plugin-bowl": "latest",
     "@websolutespa/payload-plugin-cloud-storage-fs": "latest",
     "@websolutespa/payload-plugin-cron-job": "latest",
@@ -41,7 +47,7 @@
     "axios": "0.27.2",
     "express": "^4.17.1",
     "node-cron": "^3.0.3",
-    "payload": "^1.11.1"
+    "payload": "^2.11.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.29.1",
@@ -58,7 +64,7 @@
     "@websolutespa/tsconfig": "latest",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
-    "eslint-config-websolute": "*",
+    "eslint-config-websolute": "latest",
     "eslint": "^8.46.0",
     "jest-environment-jsdom": "^29.3.1",
     "jest-fail-on-console": "^3.0.2",
@@ -73,5 +79,8 @@
     "graphql@>15.7.0 <16.7.0": "^15.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "resolutions": {
+    "jackspeak": "2.1.1"
   }
 }

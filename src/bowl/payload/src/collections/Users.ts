@@ -14,7 +14,7 @@ export const Users: BowlCollection = {
   },
   admin: {
     useAsTitle: 'email',
-    group: group.admin,
+    group: group.users,
   },
   fields: [
     // Email added by default

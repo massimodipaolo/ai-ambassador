@@ -11,15 +11,12 @@ bomEnv().then(async () => {
 
   app.use(`${basePath}/assets`, express.static(path.resolve(__dirname, './assets')));
 
-  // Redirect root to Admin panel
   app.get(`${basePath}/`, (_, res) => {
     res.redirect(`${basePath}/admin`);
   });
 
-  // Initialize Payload
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
-    mongoURL: process.env.MONGODB_URI,
     express: app,
     onInit: () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
@@ -44,7 +41,6 @@ bomEnv().then(async () => {
     next();
   });
 
-  // Add your own express routes here
   const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
   app.listen(port);
 

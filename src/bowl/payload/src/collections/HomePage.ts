@@ -1,5 +1,5 @@
 import { BowlCollection } from '@websolutespa/payload-plugin-bowl';
-import { Description1 } from '../blocks/Description1';
+import { Description } from '../blocks/Description';
 import { slug } from '../config';
 
 export const Homepage: BowlCollection = {
@@ -17,7 +17,7 @@ export const Homepage: BowlCollection = {
           fields: [
             {
               type: 'withComponents',
-              blocks: [Description1]
+              blocks: [Description]
             }
           ],
         },
