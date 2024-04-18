@@ -50,6 +50,20 @@ export default bomEnv().then(() => {
       skip: () => true, // Express middleware function that can return true (or promise resulting in true) that will bypass limit.
       trustProxy: true, // True or false, to enable to allow requests to pass through a proxy such as a load balancer or an nginx reverse proxy.
     },
+    email: {
+      transportOptions: {
+        host: process.env.PAYLOAD_SMTP_HOST || '',
+        auth: {
+          user: process.env.PAYLOAD_SMTP_USER || '',
+          pass: process.env.PAYLOAD_SMTP_PASS || '',
+        },
+        port: Number(process.env.PAYLOAD_SMTP_PORT || ''),
+        secure: Number(process.env.PAYLOAD_SMTP_PORT || '') === 465, // true for port 465, false (the default) for 587 and others
+        requireTLS: true,
+      },
+      fromName: 'pesaro2024', // !!! todo override from app settings in send mail
+      fromAddress: 'noreply@pesaro2024.it', // !!! todo override from app settings in send mail
+    },
     admin: {
       user: Users.slug,
       meta: {
@@ -82,12 +96,6 @@ export default bomEnv().then(() => {
     },
     collections: collections as CollectionConfig[],
     globals: globals as GlobalConfig[],
-    express: {
-      preMiddleware: [(req, res, next) => {
-        // console.log('preMiddleware.request', req.url);
-        next();
-      }],
-    },
     plugins: [
       bowl({
         defaultMarket,
@@ -171,6 +179,12 @@ export default bomEnv().then(() => {
         },
       }),
     ],
+    express: {
+      preMiddleware: [(req, res, next) => {
+        // console.log('preMiddleware.request', req.url);
+        next();
+      }],
+    },
     typescript: {
       outputFile: path.resolve(__dirname, 'payload-types.ts'),
     },
