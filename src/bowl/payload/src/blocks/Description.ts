@@ -1,8 +1,8 @@
 import { BowlBlock } from '@websolutespa/payload-plugin-bowl';
 
-export const Description1: BowlBlock = {
+export const Description: BowlBlock = {
   type: 'withBlock',
-  slug: 'description-1',
+  slug: 'description',
   fields: [
     { type: 'withDescription', required: true },
   ],

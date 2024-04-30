@@ -9,9 +9,11 @@ export const defaultMarket = process.env.DEFAULT_MARKET || 'ww';
 export const group = {
   content: 'content',
   nav: 'nav',
+  actions: 'actions',
+  gdpr: 'gdpr',
+  users: 'users',
   config: 'config',
   i18n: 'i18n',
-  admin: 'admin',
 };
 
 export const slug = {
@@ -24,18 +26,26 @@ export const pages = [
   slug.homepage,
 ];
 
+export const roles = {
+  Admin: 'admin',
+  Editor: 'editor',
+  Translator: 'translator',
+  User: 'user',
+  Press: 'press',
+} as const;
+
 export const translations: Resource = {
   en: {
     collection: {
       singular: {
         homepage: 'Homepage',
         users: 'User',
-        'description-1': 'Description1',
+        description: 'Description',
       },
       plural: {
         homepage: 'Homepages',
         users: 'Users',
-        'description-1': 'Description1',
+        description: 'Description',
       },
     },
     field: {
@@ -46,12 +56,12 @@ export const translations: Resource = {
       singular: {
         homepage: 'Homepage',
         users: 'Utente',
-        'description-1': 'Descrizione1',
+        description: 'Descrizione',
       },
       plural: {
         homepage: 'Homepage',
         users: 'Utenti',
-        'description-1': 'Descrizione1',
+        description: 'Descrizione',
       },
     },
     field: {

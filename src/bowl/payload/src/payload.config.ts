@@ -1,14 +1,15 @@
-
+import { webpackBundler } from '@payloadcms/bundler-webpack';
+import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
-import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
+import { slateEditor } from '@payloadcms/richtext-slate';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
-import llm, { fineTuningJobsHandler, knowledgeBaseHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import llm, { fineTuningJobsHandler, knowledgeBaseHandler, rulesHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
-//import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
+import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
 import { clearLogs, cronJob } from '@websolutespa/payload-plugin-cron-job';
 import { localization } from '@websolutespa/payload-plugin-localization';
 import '@websolutespa/payload-plugin-localization/dist/index.css';
@@ -16,9 +17,12 @@ import * as path from 'path';
 import { Payload } from 'payload';
 import { buildConfig } from 'payload/config';
 import { CollectionConfig, GlobalConfig } from 'payload/types';
+import { Configuration } from 'webpack';
 import { Homepage } from './collections/HomePage';
 import { Users } from './collections/Users';
-import { defaultLocale, defaultMarket, group, locales, pages, slug, translations } from './config';
+import { defaultLocale, defaultMarket, group, locales, pages, roles, slug, translations } from './config';
+
+const USE_AZURE_ADAPTER = true;
 
 export default bomEnv().then(() => {
 
@@ -26,17 +30,17 @@ export default bomEnv().then(() => {
   const csrf = process.env.PAYLOAD_PUBLIC_CSRF_URLS ? process.env.PAYLOAD_PUBLIC_CSRF_URLS.split(',') : [];
   const serverURL = process.env.PAYLOAD_PUBLIC_SERVER_URL || '';
   const basePath = process.env.PAYLOAD_PUBLIC_BASE_PATH || '';
+  const mongoDbUri = process.env.MONGODB_URI || '';
 
   const collections: BowlCollection[] = [
-    // Content
+    // pages
     Homepage,
-    // I18N
-    // Admin
+
+    // users
     Users,
   ];
 
   const globals: BowlGlobal[] = [
-    // Admin
   ];
 
   return buildConfig({
@@ -78,12 +82,32 @@ export default bomEnv().then(() => {
         },
       },
       css: path.resolve(__dirname, './styles.scss'),
-      webpack: (config) => {
-        if (config.resolve?.fallback)
-          config.resolve.fallback = { ...config.resolve.fallback, fs: false, stream: false };
-        return config;
+      bundler: webpackBundler(),
+      webpack: (config: Configuration) => {
+        const newConfig: Configuration = {
+          ...config,
+          resolve: {
+            ...(config.resolve || {}),
+            fallback: Array.isArray(config.resolve.fallback) ? [
+              ...(config.resolve.fallback || []),
+              { alias: false, name: 'fs' },
+              { alias: false, name: 'stream' },
+            ] : {
+              ...(config.resolve.fallback || {}),
+              fs: false,
+              stream: false,
+            },
+          },
+        };
+        return newConfig;
       },
     },
+    editor: slateEditor({}),
+    db: mongooseAdapter({
+      url: mongoDbUri,
+      // see issue https://github.com/payloadcms/payload/issues/4350
+      transactionOptions: false,
+    }),
     localization: {
       locales: [...locales],
       defaultLocale,
@@ -100,6 +124,9 @@ export default bomEnv().then(() => {
       bowl({
         defaultMarket,
         group: group,
+        roles: roles,
+        rolesUser: [roles.Admin, roles.Editor],
+        rolesEndUser: [roles.User],
         plugins: [
           llm(),
         ],
@@ -107,21 +134,21 @@ export default bomEnv().then(() => {
       cloudStorage({
         collections: {
           [slug.media]: {
-            adapter: azureBlobStorageAdapter({
-              connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
-              containerName: process.env.AZURE_STORAGE_CONTAINER_NAME,
-              allowContainerCreate: process.env.AZURE_STORAGE_ALLOW_CONTAINER_CREATE === 'true',
-              baseURL: process.env.AZURE_STORAGE_ACCOUNT_BASEURL,
-            }),
-            /*
-            adapter: fsStorageAdapter({
-              baseDir: process.env.FS_STORAGE_BASEDIR,
-              baseURL: process.env.FS_STORAGE_BASEURL,
-            }),
-            */
-            disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true',
+            adapter: USE_AZURE_ADAPTER ?
+              azureBlobStorageAdapter({
+                connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+                containerName: process.env.AZURE_STORAGE_CONTAINER_NAME,
+                allowContainerCreate: process.env.AZURE_STORAGE_ALLOW_CONTAINER_CREATE === 'true',
+                baseURL: process.env.AZURE_STORAGE_ACCOUNT_BASEURL,
+              }) :
+              fsStorageAdapter({
+                baseDir: process.env.FS_STORAGE_BASEDIR,
+                baseURL: process.env.FS_STORAGE_BASEURL,
+              }),
+            disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true' ? true : undefined,
+            generateFileURL: process.env.FS_STORAGE_ENABLE_GENERATE_FILE_URL == 'true' ? ({ filename }) => `${process.env.FS_STORAGE_BASEURL}/${filename}` : undefined,
           },
-        } as Record<string, CollectionOptions>,
+        },
       }),
       seo({
         collections: pages,
@@ -166,8 +193,6 @@ export default bomEnv().then(() => {
             },
             cron: '0 3 * * *',
           },
-          /*
-          todo: enable this rule when the python script that generates the rules vectordb is implemented
           llmRules: {
             execute: async (payload: Payload) => {
               console.log('ScheduledTask.llmRules every day at 04:00');
@@ -175,7 +200,6 @@ export default bomEnv().then(() => {
             },
             cron: '0 4 * * *',
           },
-          */
         },
       }),
     ],
@@ -191,13 +215,13 @@ export default bomEnv().then(() => {
     graphQL: {
       schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
     },
-    // indexSortableFields: true
     routes: {
       api: `${basePath}/api`,
       admin: `${basePath}/admin`,
       graphQL: `${basePath}/graphql`,
       graphQLPlayground: `${basePath}/graphql-playground`,
     },
+    // indexSortableFields: true
   });
 
 });
