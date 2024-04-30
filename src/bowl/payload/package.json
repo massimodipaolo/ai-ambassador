@@ -33,7 +33,7 @@
     "@payloadcms/plugin-seo": "^1.0.8",
     "@websolutespa/bom-core": "latest",
     "@websolutespa/bom-env": "latest",
-    "@websolutespa/payload-plugin-bowl-llm": "0.1.9",
+    "@websolutespa/payload-plugin-bowl-llm": "0.1.10",
     "@websolutespa/payload-plugin-bowl": "latest",
     "@websolutespa/payload-plugin-cloud-storage-fs": "latest",
     "@websolutespa/payload-plugin-cron-job": "latest",
