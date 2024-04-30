@@ -2,10 +2,12 @@
 build
 dist
 knowledge-base
+rules
 lib
 llm
 obj
 venv
+src/migrations
 
 ### Node ###
 # Logs

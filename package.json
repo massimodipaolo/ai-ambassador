@@ -45,7 +45,8 @@
     "oven": "dotnet watch run -lp web",
     "mixer": "npm run dev:web",
     "mixer:build": "npm run build:web",
-    "mixer:serve": "npm run serve:web"
+    "mixer:serve": "npm run serve:web",
+    "cli": "bom"
   },
   "dependencies": {
     "react": "^18.2.0",

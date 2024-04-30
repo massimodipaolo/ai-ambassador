@@ -46,6 +46,7 @@
     "@websolutespa/payload-plugin-localization": "latest",
     "axios": "0.27.2",
     "express": "^4.17.1",
+    "marked": "^12.0.1",
     "node-cron": "^3.0.3",
     "payload": "^2.11.2"
   },

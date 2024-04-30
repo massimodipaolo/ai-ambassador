@@ -2,12 +2,11 @@ import { webpackBundler } from '@payloadcms/bundler-webpack';
 import { mongooseAdapter } from '@payloadcms/db-mongodb';
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure';
-import { CollectionOptions } from '@payloadcms/plugin-cloud-storage/dist/types';
 import seo from '@payloadcms/plugin-seo';
 import { slateEditor } from '@payloadcms/richtext-slate';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
-import llm, { fineTuningJobsHandler, knowledgeBaseHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import llm, { fineTuningJobsHandler, knowledgeBaseHandler, rulesHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
@@ -18,6 +17,7 @@ import * as path from 'path';
 import { Payload } from 'payload';
 import { buildConfig } from 'payload/config';
 import { CollectionConfig, GlobalConfig } from 'payload/types';
+import { Configuration } from 'webpack';
 import { Homepage } from './collections/HomePage';
 import { Users } from './collections/Users';
 import { defaultLocale, defaultMarket, group, locales, pages, roles, slug, translations } from './config';
@@ -69,14 +69,23 @@ export default bomEnv().then(() => {
       },
       css: path.resolve(__dirname, './styles.scss'),
       bundler: webpackBundler(),
-      webpack: (config) => {
-        if (config.resolve?.fallback) {
-          config.resolve.fallback = {
-            ...config.resolve.fallback,
-            fs: false, stream: false,
-          };
-        }
-        return config;
+      webpack: (config: Configuration) => {
+        const newConfig: Configuration = {
+          ...config,
+          resolve: {
+            ...(config.resolve || {}),
+            fallback: Array.isArray(config.resolve.fallback) ? [
+              ...(config.resolve.fallback || []),
+              { alias: false, name: 'fs' },
+              { alias: false, name: 'stream' },
+            ] : {
+              ...(config.resolve.fallback || {}),
+              fs: false,
+              stream: false,
+            },
+          },
+        };
+        return newConfig;
       },
     },
     editor: slateEditor({}),
@@ -131,7 +140,7 @@ export default bomEnv().then(() => {
             disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true' ? true : undefined,
             generateFileURL: process.env.FS_STORAGE_ENABLE_GENERATE_FILE_URL == 'true' ? ({ filename }) => `${process.env.FS_STORAGE_BASEURL}/${filename}` : undefined,
           },
-        } as Record<string, CollectionOptions>,
+        },
       }),
       seo({
         collections: pages,
@@ -176,8 +185,6 @@ export default bomEnv().then(() => {
             },
             cron: '0 3 * * *',
           },
-          /*
-          todo: enable this rule when the python script that generates the rules vectordb is implemented
           llmRules: {
             execute: async (payload: Payload) => {
               console.log('ScheduledTask.llmRules every day at 04:00');
@@ -185,7 +192,6 @@ export default bomEnv().then(() => {
             },
             cron: '0 4 * * *',
           },
-          */
         },
       }),
     ],
