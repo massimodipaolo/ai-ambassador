@@ -53,31 +53,27 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.8",
-    "@changesets/cli": "^2.26.0",
-    "@swc/jest": "^0.2.24",
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.1",
+    "@swc/jest": "^0.2.36",
     "@websolutespa/bom-cli": "latest",
     "@websolutespa/bom-env": "latest",
     "@websolutespa/tsconfig": "latest",
-    "ajv": "^8.8.2",
     "cross-env": "^7.0.3",
-    "eslint": "^8.46.0",
-    "eslint-config-websolute": "*",
-    "prettier": "^3.0.1",
+    "eslint": "^9.0.0",
+    "eslint-config-websolute": "latest",
+    "prettier": "^3.2.5",
     "npm-run-all": "^4.1.5",
     "rimraf": "3.0.2",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "turbo": "latest"
   },
   "bundledDependencies": [
     "packages/test"
   ],
   "engines": {
-    "npm": ">=8.5.5 <=9.x.x",
-    "node": ">=16.15.0 <=18.x.x"
+    "npm": ">=10.5.0",
+    "node": ">=20.12.1 <=21.x.x"
   },
-  "packageManager": "npm@8.5.5",
-  "overrides": {
-    "graphql@>15.7.0 <16.7.0": "^15.8.0"
-  }
+  "type": "module"
 }
