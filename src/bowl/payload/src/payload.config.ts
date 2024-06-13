@@ -125,8 +125,8 @@ export default bomEnv().then(() => {
         defaultMarket,
         group: group,
         roles: roles,
-        rolesUser: [roles.Admin, roles.Editor],
-        rolesEndUser: [roles.User],
+        rolesUser: [roles.Admin, roles.Contributor, roles.Editor, roles.Translator, roles.Guest],
+        rolesEndUser: [roles.User, roles.Press],
         plugins: [
           llm(),
         ],

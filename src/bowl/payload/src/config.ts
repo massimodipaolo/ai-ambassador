@@ -28,8 +28,10 @@ export const pages = [
 
 export const roles = {
   Admin: 'admin',
+  Contributor: 'contributor',
   Editor: 'editor',
   Translator: 'translator',
+  Guest: 'guest',
   User: 'user',
   Press: 'press',
 } as const;
