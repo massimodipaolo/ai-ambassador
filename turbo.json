@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "tasks": {
     "dev": {
       "cache": false,
       "dependsOn": [
@@ -120,5 +120,6 @@
     "NEXT_PUBLIC_MOCK_FALLBACK_URL",
     "NEXT_PUBLIC_URL",
     "VERCEL"
-  ]
+  ],
+  "ui": "stream"
 }
