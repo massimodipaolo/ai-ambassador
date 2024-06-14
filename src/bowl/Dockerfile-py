@@ -25,6 +25,7 @@ ENV PATH $NODE_PATH:$PATH
 FROM base as builder
 WORKDIR /app
 COPY *.json ./
+COPY src/packages ./src/packages
 COPY src/bowl ./src/bowl
 RUN npm ci --legacy-peer-deps=true
 # build
