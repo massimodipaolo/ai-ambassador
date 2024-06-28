@@ -5,7 +5,7 @@ import { azureBlobStorageAdapter } from '@payloadcms/plugin-cloud-storage/azure'
 import seo from '@payloadcms/plugin-seo';
 import { slateEditor } from '@payloadcms/richtext-slate';
 import bomEnv from '@websolutespa/bom-env';
-import bowl, { BowlCollection, BowlGlobal, Icon, Logo } from '@websolutespa/payload-plugin-bowl';
+import bowl, { BowlCollection, BowlGlobal, Icon, Logo, isRole } from '@websolutespa/payload-plugin-bowl';
 import llm, { fineTuningJobsHandler, knowledgeBaseHandler, rulesHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
@@ -125,7 +125,7 @@ export default bomEnv().then(() => {
         defaultMarket,
         group: group,
         roles: roles,
-        rolesUser: [roles.Admin, roles.Contributor, roles.Editor, roles.Translator, roles.Guest],
+        rolesUser: [roles.Admin, roles.Contributor, roles.Editor, roles.LlmEditor, roles.Translator, roles.Guest],
         rolesEndUser: [roles.User, roles.Press],
         plugins: [
           llm(),
@@ -158,6 +158,12 @@ export default bomEnv().then(() => {
       }),
       localization(),
       cronJob({
+        access: {
+          create: isRole(roles.Admin),
+          read: isRole(roles.Admin),
+          update: isRole(roles.Admin),
+          delete: isRole(roles.Admin),
+        },
         jobs: {
           alwaysOn: {
             execute: (payload: Payload) => {

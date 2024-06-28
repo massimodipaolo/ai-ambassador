@@ -1,4 +1,4 @@
-import { BowlCollection } from '@websolutespa/payload-plugin-bowl';
+import { BowlCollection, isAdmin, isAdminOrSelf } from '@websolutespa/payload-plugin-bowl';
 import { group, slug } from '../config';
 
 export const Users: BowlCollection = {
@@ -12,6 +12,12 @@ export const Users: BowlCollection = {
     verify: false, // Require email verification before being allowed to authenticate
     // More options are available
   },
+  access: {
+    create: isAdmin,
+    read: isAdminOrSelf,
+    update: isAdminOrSelf,
+    delete: isAdminOrSelf,
+  },
   admin: {
     useAsTitle: 'email',
     group: group.users,
@@ -19,5 +25,12 @@ export const Users: BowlCollection = {
   fields: [
     // Email added by default
     // Add more fields as needed
+    {
+      type: 'withRoles',
+    },
+    {
+      type: 'withTenants',
+      relationTo: ['llmApp'],
+    },
   ],
 };

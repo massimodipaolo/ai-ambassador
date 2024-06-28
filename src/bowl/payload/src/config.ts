@@ -30,6 +30,7 @@ export const roles = {
   Admin: 'admin',
   Contributor: 'contributor',
   Editor: 'editor',
+  LlmEditor: 'llm_editor',
   Translator: 'translator',
   Guest: 'guest',
   User: 'user',
