@@ -148,6 +148,21 @@ export default bomEnv().then(() => {
             disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true' ? true : undefined,
             generateFileURL: process.env.FS_STORAGE_ENABLE_GENERATE_FILE_URL == 'true' ? ({ filename }) => `${process.env.FS_STORAGE_BASEURL}/${filename}` : undefined,
           },
+          [slug.llmKbFile]: {
+            adapter: USE_AZURE_ADAPTER ?
+              azureBlobStorageAdapter({
+                connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+                containerName: process.env.AZURE_STORAGE_LLM_KBFILE_CONTAINER_NAME,
+                allowContainerCreate: process.env.AZURE_STORAGE_ALLOW_CONTAINER_CREATE === 'true',
+                baseURL: process.env.AZURE_STORAGE_ACCOUNT_BASEURL,
+              }) :
+              fsStorageAdapter({
+                baseDir: process.env.FS_STORAGE_LLM_KBFILE_BASEDIR,
+                baseURL: process.env.FS_STORAGE_LLM_KBFILE_BASEURL,
+              }),
+            disablePayloadAccessControl: process.env.FS_STORAGE_DISABLE_PAYLOAD_ACCESS_CONTROL == 'true' ? true : undefined,
+            generateFileURL: process.env.FS_STORAGE_ENABLE_GENERATE_FILE_URL == 'true' ? ({ filename }) => `${process.env.FS_STORAGE_LLM_KBFILE_BASEURL}/${filename}` : undefined,
+          },
         },
       }),
       seo({

@@ -19,6 +19,7 @@ export const group = {
 export const slug = {
   homepage: 'homepage',
   media: 'media',
+  llmKbFile: 'llmKbFile',
   users: 'users',
 };
 
