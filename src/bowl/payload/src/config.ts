@@ -1,3 +1,4 @@
+import { options } from '@websolutespa/payload-plugin-bowl';
 import { Resource } from 'i18next';
 
 export const locales = ['en', 'it'] as const;
@@ -28,13 +29,8 @@ export const pages = [
 ];
 
 export const roles = {
-  Admin: 'admin',
-  Contributor: 'contributor',
-  Editor: 'editor',
-  LlmEditor: 'llm_editor',
+  ...options.roles,
   Translator: 'translator',
-  Guest: 'guest',
-  User: 'user',
   Press: 'press',
 } as const;
 
