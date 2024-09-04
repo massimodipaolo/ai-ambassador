@@ -6,7 +6,7 @@ import seo from '@payloadcms/plugin-seo';
 import { slateEditor } from '@payloadcms/richtext-slate';
 import bomEnv from '@websolutespa/bom-env';
 import bowl, { BowlCollection, BowlGlobal, Icon, Logo, isRole } from '@websolutespa/payload-plugin-bowl';
-import llm, { fineTuningJobsHandler, knowledgeBaseHandler, rulesHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
+import llm, { fineTuningJobsHandler, rulesHandler, toolsKnowledgeBaseHandler } from '@websolutespa/payload-plugin-bowl-llm';
 import '@websolutespa/payload-plugin-bowl-llm/dist/index.css';
 import '@websolutespa/payload-plugin-bowl/dist/index.css';
 import { fsStorageAdapter } from '@websolutespa/payload-plugin-cloud-storage-fs';
@@ -207,13 +207,6 @@ export default bomEnv().then(() => {
               return await clearLogs(payload);
             },
             cron: '0 1 * * 0',
-          },
-          llm: {
-            execute: async (payload: Payload) => {
-              console.log('ScheduledTask.llm every day at 01:00');
-              return await knowledgeBaseHandler(payload);
-            },
-            cron: '0 1 * * *',
           },
           llmKnowledgeBase: {
             execute: async (payload: Payload) => {
