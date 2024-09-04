@@ -21,6 +21,7 @@ export const slug = {
   homepage: 'homepage',
   media: 'media',
   llmKbFile: 'llmKbFile',
+  llmVectorDb: 'llmVectorDb',
   users: 'users',
 };
 
