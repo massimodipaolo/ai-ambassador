@@ -44,6 +44,7 @@
     "@websolutespa/payload-plugin-cloud-storage-fs": "latest",
     "@websolutespa/payload-plugin-cron-job": "latest",
     "@websolutespa/payload-plugin-localization": "latest",
+    "@websolutespa/payload-utils": "latest",
     "express": "^4.17.1",
     "marked": "^12.0.1",
     "node-cron": "^3.0.3",
