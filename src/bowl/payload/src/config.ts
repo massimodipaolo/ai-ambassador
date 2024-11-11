@@ -1,7 +1,7 @@
 import { options } from '@websolutespa/payload-plugin-bowl';
 import { Resource } from 'i18next';
 
-export const locales = ['en', 'it'] as const;
+export const locales = ['en', 'it', 'fr'] as const;
 
 export const defaultLocale = process.env.DEFAULT_LOCALE || 'en';
 
@@ -68,4 +68,5 @@ export const translations: Resource = {
     field: {
     },
   },
+  fr: {},
 };
