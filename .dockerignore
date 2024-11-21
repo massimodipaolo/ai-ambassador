@@ -3,6 +3,8 @@
 .dockerignore
 node_modules
 **/node_modules/
+__pycache__
+**/__pycache__/
 bin
 obj
 out
@@ -22,3 +24,4 @@ README.md
 .next
 .git
 .github
+

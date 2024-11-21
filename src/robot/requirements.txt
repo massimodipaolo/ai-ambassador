@@ -1,0 +1,2 @@
+scrapy==2.11.2 #llm.vector_store.loader.urls_loader
+scikit-learn==1.5.2 #video_tools_sf.py
