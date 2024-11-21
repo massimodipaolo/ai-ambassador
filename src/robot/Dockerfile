@@ -15,11 +15,12 @@ RUN apt-get update; \
   rm -rf /var/lib/apt/lists/*
 
 FROM base AS installer
-RUN --mount=type=cache,target=/root/.cache/pip pip install ws-bom-robot-app==0.0.2
+RUN --mount=type=cache,target=/root/.cache/pip pip install ws-bom-robot-app==0.0.3
 COPY src/robot/requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 FROM installer AS runtime
 WORKDIR /app
 COPY src/robot .
+EXPOSE 6001
 CMD ["fastapi", "run", "./main.py","--host","0.0.0.0","--port", "6001","--workers","4"]
