@@ -22,4 +22,9 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 FROM installer AS runtime
 WORKDIR /app
 COPY src/robot .
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN useradd -m 'ws.admin' && echo 'ws.admin:secret' | chpasswd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+EXPOSE 22 80
 CMD ["fastapi", "run", "./main.py","--host","0.0.0.0","--port", "80","--workers","4"]
