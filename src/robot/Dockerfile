@@ -21,16 +21,6 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 FROM installer AS runtime
 WORKDIR /app
-# ssh
-COPY entrypoint.sh ./
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends dialog \
-  && apt-get install -y --no-install-recommends openssh-server \
-  && echo "root:Docker!" | chpasswd \
-  && chmod u+x ./entrypoint.sh
-COPY sshd_config /etc/ssh/
-EXPOSE 6001 2222
-# app
 COPY src/robot .
-ENTRYPOINT [ "./entrypoint.sh" ]
+EXPOSE 6001
 CMD ["fastapi", "run", "./main.py","--host","0.0.0.0","--port", "6001","--workers","4"]
