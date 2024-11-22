@@ -6,3 +6,6 @@ eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/
 
 echo "Starting SSH ..."
 service ssh start
+
+echo "Starting CMD app ..."
+exec "$@"
