@@ -15,15 +15,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from ws_bom_robot_app.llm.tools.tool_manager import ToolManager,ToolConfig
 
-def init():
-  ToolManager._list["knowledge-events-experiences"] = ToolConfig(function=search_events, model=EventInput)
-  ToolManager._list["knowledge-points-of-interest"] = ToolConfig(function=search_points_of_interest, model=PoiInput)
-  ToolManager._list["knowledge-restaurants-locals"] = ToolConfig(function=search_restaurant_locals, model=RestaurantsInput)
-  ToolManager._list["lfo_cards"] = ToolConfig(function=lfo_card_retriever, model=LfoCardInput)
-  ToolManager._list["email_sender"] = ToolConfig(function=email_sender, model=EmailSenderInput)
-  ToolManager._list["silicon_catalog_search"] = ToolConfig(function=silicon_catalog_search, model=CatalogCardInput)
-  ToolManager._list["video_tool_sf"] = ToolConfig(function=video_tool_sf)
-
 #region functions
 async def email_sender(self, answer_to_questions: List[QAItem], analisys: str, to_email:str):
   secrets = self.app_tool.get("secrets", {})
@@ -248,3 +239,19 @@ async def video_tool_sf(self, query: str) -> str:
     url_ouput = video_tool_function(self.api_key, query, self.app_tool)
     return url_ouput
 # endregion
+
+def init():
+  ToolManager._list["knowledge-events-experiences"] = ToolConfig(function=search_events, model=EventInput)
+  ToolManager.search_events = search_events
+  ToolManager._list["knowledge-points-of-interest"] = ToolConfig(function=search_points_of_interest, model=PoiInput)
+  ToolManager.search_points_of_interest = search_points_of_interest
+  ToolManager._list["knowledge-restaurants-locals"] = ToolConfig(function=search_restaurant_locals, model=RestaurantsInput)
+  ToolManager.search_restaurant_locals = search_restaurant_locals
+  ToolManager._list["lfo_cards"] = ToolConfig(function=lfo_card_retriever, model=LfoCardInput)
+  ToolManager.lfo_card_retriever = lfo_card_retriever
+  ToolManager._list["email_sender"] = ToolConfig(function=email_sender, model=EmailSenderInput)
+  ToolManager.email_sender = email_sender
+  ToolManager._list["silicon_catalog_search"] = ToolConfig(function=silicon_catalog_search, model=CatalogCardInput)
+  ToolManager.silicon_catalog_search = silicon_catalog_search
+  ToolManager._list["video_tool_sf"] = ToolConfig(function=video_tool_sf)
+  ToolManager.video_tool_sf = video_tool_sf
