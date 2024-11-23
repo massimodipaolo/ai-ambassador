@@ -15,7 +15,7 @@ RUN apt-get update; \
   rm -rf /var/lib/apt/lists/*
 
 FROM base AS installer
-RUN --mount=type=cache,target=/root/.cache/pip pip install ws-bom-robot-app==0.0.3
+RUN --mount=type=cache,target=/root/.cache/pip pip install ws-bom-robot-app==0.0.4
 COPY src/robot/requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 

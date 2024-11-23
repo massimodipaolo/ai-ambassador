@@ -25,6 +25,7 @@ from sqlalchemy import exc as sa_exc
 class EventToolWrapper:
 
     def __init__(self, api_key: str, tool: LlmAppTool, n_items: int = 10):
+        self.prompt = tool.llm_chain_settings.prompt or ""
         self.DELTA_PERIOD = 10
         self.run_id = uuid4()
         self.client = None
