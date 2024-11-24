@@ -22,8 +22,7 @@ jobs:
 
     - name: free-up agent space
       run: |
-        rm -rf /opt/hostedtoolcache
-        rm -f /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        rm -rf /opt/hostedtoolcache /usr/share/dotnet /usr/local/lib/android /opt/ghc
 
     - name: checkout repository
       uses: actions/checkout@v4
