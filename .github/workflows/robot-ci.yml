@@ -19,6 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: free-up agent space
+      run: |
+        rm -rf /opt/hostedtoolcache
+        swapoff /swapfile
+        rm -f /swapfile /usr/share/dotnet /usr/local/lib/android /opt/ghc
+
     - name: checkout repository
       uses: actions/checkout@v4
 
